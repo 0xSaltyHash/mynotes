@@ -2,7 +2,7 @@ from django import forms
 from .models import Notes
 
 
-class newNote(forms.ModelFORM):
+class newNote(forms.ModelForm):
     class Meta:
         model = Notes
         fields = ['title', 'body']
