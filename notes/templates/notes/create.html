@@ -1,0 +1,10 @@
+{% extends "notes/layout.html" %}
+
+{% block body %}
+    <h2>Create new note</h2>
+    <form action="/create" method="POST">
+        {% csrf_token %}
+        {{notesForm}}
+        <input class="btn btn-primary" type="submit" value="Create">
+    </form>
+{% endblock %}
