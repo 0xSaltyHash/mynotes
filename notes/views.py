@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Notes
+from .forms import newNote
 # Create your views here.
 
 @login_required(login_url='/login')
@@ -16,7 +17,10 @@ def index(request):
 
 @login_required(login_url='/login')
 def create(request):
-    #TODO
+    if request.method == "GET":
+        return render(request, "notes/create.html", {
+            "notesForm": newNote
+        })
     return HttpResponse("200 OK")
 
 
