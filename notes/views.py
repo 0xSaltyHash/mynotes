@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.db import IntegrityError
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -21,7 +21,13 @@ def create(request):
         return render(request, "notes/create.html", {
             "notesForm": newNote
         })
-    return HttpResponse("200 OK")
+    elif request.method == "POST":
+        form = newNote(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.creator = request.user
+            note.save()
+        return redirect(index)
 
 
 def login_view(request):
