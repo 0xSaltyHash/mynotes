@@ -11,7 +11,9 @@ from .forms import newNote
 
 @login_required(login_url='/login')
 def index(request):
+    userNotes = Notes.objects.filter(creator=request.user)
     return render(request, "notes/index.html", {
+        "notes": userNotes
 
     })
 
