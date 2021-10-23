@@ -2,9 +2,16 @@
 
 {% block body %}
     <h2>Create new note</h2>
-    <form action="/create" method="POST">
+    <form action="{% url 'create' %}" method="POST">
         {% csrf_token %}
-        {{notesForm}}
+        <div class="form-group">
+            <label for="id_title">{{notesForm.title.label}}</label>
+            <input type="text" class="form-control" name="{{notesForm.title.name}}" placeholder="{{notesForm.title.name}}" required>
+        </div>
+        <div class="form-group">
+            <label for="id_body">{{notesForm.body.label}}</label>
+            <textarea type="text" class="form-control" name="{{notesForm.body.name}}" placeholder="{{notesForm.body.name}}" required></textarea>
+        </div>
         <input class="btn btn-primary" type="submit" value="Create">
     </form>
 {% endblock %}
