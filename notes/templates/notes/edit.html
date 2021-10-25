@@ -1,0 +1,17 @@
+{% extends "notes/layout.html" %}
+
+{% block body %}
+    <h2>Create new note</h2>
+    <form action="{% url 'edit' id=note.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">{{notesForm.title.label}}</label>
+            <input type="text" class="form-control" name="{{notesForm.title.name}}" value="{{note.title}}" required>
+        </div>
+        <div class="form-group">
+            <label for="id_body">{{notesForm.body.label}}</label>
+            <textarea type="text" class="form-control" name="{{notesForm.body.name}}" required>{{note.body}}</textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="edit">
+    </form>
+{% endblock %}
