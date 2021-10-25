@@ -45,6 +45,12 @@ def edit(request, id):
             "note": note
         })
 
+    if request.method == "POST":
+        form = newNote(request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            return redirect(index)
+
 def login_view(request):
     if request.method == "POST":
 
