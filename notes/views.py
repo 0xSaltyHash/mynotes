@@ -31,6 +31,19 @@ def create(request):
             note.save()
         return redirect(index)
 
+@login_required(login_url='/login')
+def edit(request, id):
+    note = Notes.objects.get(pk=id)
+    
+    if request.user != note.creator:
+        return redirect(index)
+    
+    if request.method == "GET":
+        notesForm = newNote(instance=note)
+        return render(request, "notes/edit.html", {
+            "notesForm": notesForm,
+            "note": note
+        })
 
 def login_view(request):
     if request.method == "POST":
