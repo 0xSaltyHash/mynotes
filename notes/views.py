@@ -36,6 +36,7 @@ def edit(request, id):
     note = Notes.objects.get(pk=id)
     
     if request.user != note.creator:
+        messages.error(request, 'You cannot edit this note')
         return redirect(index)
     
     if request.method == "GET":
@@ -49,6 +50,7 @@ def edit(request, id):
         form = newNote(request.POST, instance=note)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Note edited successfuly')
             return redirect(index)
 
 def login_view(request):
