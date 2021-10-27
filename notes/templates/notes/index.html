@@ -2,6 +2,14 @@
 {% extends "notes/layout.html" %}
 
 {% block body %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
     <h2>My Notes</h2>
     <div class="container-fluid">
         <div class="row">
