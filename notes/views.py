@@ -53,6 +53,13 @@ def edit(request, id):
             messages.success(request, 'Note edited successfuly')
             return redirect(index)
 
+def note(request, id):
+    if request.method == "GET":
+        note = Notes.objects.get(pk=id)
+        return render(request, "notes/note.html", {
+            "note": note
+        })
+
 def login_view(request):
     if request.method == "POST":
 
