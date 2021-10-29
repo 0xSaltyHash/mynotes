@@ -56,6 +56,10 @@ def edit(request, id):
 def note(request, id):
     if request.method == "GET":
         note = Notes.objects.get(pk=id)
+        if (note.is_public == False) and (request.user != note.creator):
+            messages.error(request, 'You cannot view this note')
+            return redirect(index)
+
         return render(request, "notes/note.html", {
             "note": note
         })
