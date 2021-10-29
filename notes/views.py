@@ -33,7 +33,11 @@ def create(request):
 
 @login_required(login_url='/login')
 def edit(request, id):
-    note = Notes.objects.get(pk=id)
+    try:
+        note = Notes.objects.get(pk=id)
+    except Notes.DoesNotExist:
+        messages.error(request, 'Note doesn\'t exist')
+        return redirect(index)
     
     if request.user != note.creator:
         messages.error(request, 'You cannot edit this note')
@@ -55,7 +59,11 @@ def edit(request, id):
 
 def note(request, id):
     if request.method == "GET":
-        note = Notes.objects.get(pk=id)
+        try:
+             note = Notes.objects.get(pk=id)
+        except Notes.DoesNotExist:
+            messages.error(request, 'Note doesn\'t exist')
+            return redirect(index)
         if (note.is_public == False) and (request.user != note.creator):
             messages.error(request, 'You cannot view this note')
             return redirect(index)
