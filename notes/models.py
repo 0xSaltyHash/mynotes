@@ -13,5 +13,5 @@ class Notes(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     creation_date_time = models.DateTimeField(auto_now_add=True)
-    #is_deleted = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
 
