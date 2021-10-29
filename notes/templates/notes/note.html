@@ -11,9 +11,12 @@
                         <h4 class="card-title">
                             {{note.title}}
                         </h4>
-                        <p class="card-title">
+                        <p class="card-text">
                             {{note.body}}
                         </p>
+                        {% if note.creator == user %}
+                        <a href="{% url 'edit' id=note.id %}" class="btn btn-primary">edit</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
