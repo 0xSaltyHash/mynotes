@@ -9,8 +9,9 @@ class test_views(TestCase):
 
     def setUp(self):
         self.client = Client()
-        #self.test_user = User.objects.create(username="testuser", password="12345678", email="test@user.mail")
-
+        self.test_user = User.objects.create(username="testuser", password="12345678", email="test@user.mail")
+        self.test_note = Notes.objects.create(creator=self.test_user, title="test note", body="test note")
+    
     def test_notes_list_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
         response = self.client.get(reverse('index'))
@@ -55,3 +56,20 @@ class test_views(TestCase):
 
         self.assertRedirects(response, '/login?next=/create', status_code=302,
          target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_notes_GET_not_logged_in(self):
+        response = self.client.get(reverse('edit', args=[1]))
+        self.assertRedirects(response, '/login?next=/edit/1', status_code=302,
+        target_status_code=200)
+    
+    def test_edit_notes_GET_logged_in(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.get(reverse('edit', args=[1]))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('notes/edit.html')
+    
+    def test_edit_not_found_note_GET_logged_in(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.get(reverse('edit', args=[2]))
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
