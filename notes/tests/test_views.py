@@ -47,7 +47,7 @@ class test_views(TestCase):
         self.assertEquals(Notes.objects.get(pk=1).title, 'test title')
         self.assertEquals(Notes.objects.get(pk=1).body, 'test body')
     
-    def test_create_notes_POST_logged_in(self):
+    def test_create_notes_POST_not_logged_in(self):
 
         response = self.client.post(reverse('create'), {
             'title': 'test title',
