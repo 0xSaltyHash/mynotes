@@ -11,6 +11,7 @@ class test_views(TestCase):
         self.client = Client()
         self.test_user = User.objects.create(username="testuser", password="12345678", email="test@user.mail")
         self.test_note = Notes.objects.create(creator=self.test_user, title="test note", body="test note")
+        self.test_note_public = Notes.objects.create(creator=self.test_user, title="public note", body="public note body", is_public=True)
     
     def test_notes_list_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
@@ -44,8 +45,8 @@ class test_views(TestCase):
         self.assertRedirects(response, '/', status_code=302,
          target_status_code=200, fetch_redirect_response=True)
 
-        self.assertEquals(Notes.objects.get(pk=1).title, 'test title')
-        self.assertEquals(Notes.objects.get(pk=1).body, 'test body')
+        self.assertEquals(Notes.objects.get(pk=3).title, 'test title')
+        self.assertEquals(Notes.objects.get(pk=3).body, 'test body')
     
     def test_create_notes_POST_not_logged_in(self):
 
@@ -70,13 +71,13 @@ class test_views(TestCase):
     
     def test_edit_not_found_note_GET_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        response = self.client.get(reverse('edit', args=[2]))
+        response = self.client.get(reverse('edit', args=[3]))
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
     def test_edit_not_found_note_POST_logged_id(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        response = self.client.post(reverse('edit', args=[2]), {
+        response = self.client.post(reverse('edit', args=[3]), {
             'title': "New test Title",
             "body": 'New Test Body'
         })
@@ -114,3 +115,5 @@ class test_views(TestCase):
         self.assertEqual(str(messages[0]), "Note edited successfuly")
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
+
+    
