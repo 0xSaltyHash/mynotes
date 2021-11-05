@@ -116,4 +116,41 @@ class test_views(TestCase):
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
+    def test_view_private_note_owner_GET(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.get(reverse('view_note', args=[1]))
+        
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('notes/note.html')
+
+    def test_view_private_note_not_owner_GET(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser2')[0])
+        response = self.client.get(reverse('view_note', args=[1]))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You cannot view this note")
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
     
+    def test_view_public_note_by_not_owner_GET(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser2')[0])
+        response = self.client.get(reverse('view_note', args=[2]))
+        
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('notes/note.html')
+    
+    def test_view_note_not_found_GET(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.get(reverse('view_note', args=[3]))
+        
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Note doesn't exist")
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
+
+    def test_view_public_note_not_logged_in_GET(self):
+        response = self.client.get(reverse('view_note', args=[2]))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('notes/note.html')
