@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.urls.base import resolve
 from notes.models import Notes, User
-
+from django.contrib.messages import get_messages
 
 class test_views(TestCase):
 
@@ -71,5 +71,46 @@ class test_views(TestCase):
     def test_edit_not_found_note_GET_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
         response = self.client.get(reverse('edit', args=[2]))
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
+
+    def test_edit_not_found_note_POST_logged_id(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.post(reverse('edit', args=[2]), {
+            'title': "New test Title",
+            "body": 'New Test Body'
+        })
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Note doesn't exist")
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
+
+    def test_edit_note_by_non_owner_POST(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser2')[0])
+        response = self.client.post(reverse('edit', args=[1]), {
+            'title': "New test Title",
+            "body": 'New Test Body'
+        })
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You cannot edit this note")
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
+
+    def test_edit_note_POST(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.post(reverse('edit', args=[1]), {
+            'title': "New Test Title",
+            "body": 'New Test Body'
+        })
+
+        edited_note = Notes.objects.get(pk=1)        
+        messages = list(get_messages(response.wsgi_request))
+
+        self.assertEquals(edited_note.title, "New Test Title")
+        self.assertEquals(edited_note.body, "New Test Body")
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Note edited successfuly")
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
