@@ -75,7 +75,7 @@ class test_views(TestCase):
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
-    def test_edit_not_found_note_POST_logged_id(self):
+    def test_edit_not_found_note_POST_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
         response = self.client.post(reverse('edit', args=[3]), {
             'title': "New test Title",
@@ -84,7 +84,7 @@ class test_views(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Note doesn't exist")
-        self.assertRedirects(response, '/', status_code=302,
+        self.assertRedirects(response, '/view/3', status_code=302,
         target_status_code=200)
 
     def test_edit_note_by_non_owner_POST(self):
