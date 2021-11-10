@@ -99,6 +99,18 @@ class test_views(TestCase):
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
+    def test_edit_public_note_by_non_owner_POST(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser2')[0])
+        response = self.client.post(reverse('edit', args=[2]), {
+            'title': "New test Title",
+            "body": 'New Test Body'
+        })
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You cannot edit this note")
+        self.assertRedirects(response, '/', status_code=302,
+        target_status_code=200)
+    
     def test_edit_note_POST(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
         response = self.client.post(reverse('edit', args=[1]), {
