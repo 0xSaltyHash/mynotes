@@ -42,7 +42,7 @@ class test_views(TestCase):
             'body': 'test body'
         })
 
-        self.assertRedirects(response, '/', status_code=302,
+        self.assertRedirects(response, '/view/3', status_code=302,
          target_status_code=200, fetch_redirect_response=True)
 
         self.assertEquals(Notes.objects.get(pk=3).title, 'test title')
