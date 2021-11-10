@@ -24,10 +24,10 @@ def create(request):
     elif request.method == "POST":
         form = newNote(request.POST)
         if form.is_valid():
-            note = form.save(commit=False)
-            note.creator = request.user
-            note.save()
-        return redirect(index)
+            new_note = form.save(commit=False)
+            new_note.creator = request.user
+            new_note.save()
+        return redirect(note, id=new_note.id)
 
 @login_required(login_url='/login')
 def edit(request, id):
