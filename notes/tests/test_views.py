@@ -84,7 +84,7 @@ class test_views(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Note doesn't exist")
-        self.assertRedirects(response, '/view/3', status_code=302,
+        self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
     def test_edit_note_by_non_owner_POST(self):
@@ -113,7 +113,7 @@ class test_views(TestCase):
         self.assertEquals(edited_note.body, "New Test Body")
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Note edited successfuly")
-        self.assertRedirects(response, '/', status_code=302,
+        self.assertRedirects(response, '/view/1', status_code=302,
         target_status_code=200)
 
     def test_view_private_note_owner_GET(self):

@@ -27,7 +27,7 @@ def create(request):
             new_note = form.save(commit=False)
             new_note.creator = request.user
             new_note.save()
-        return redirect(note, id=new_note.id)
+        return redirect(view_note, id=new_note.id)
 
 @login_required(login_url='/login')
 def edit(request, id):
@@ -55,7 +55,7 @@ def edit(request, id):
             messages.success(request, 'Note edited successfuly')
             return redirect(index)
 
-def note(request, id):
+def view_note(request, id):
     if request.method == "GET":
         try:
              note = Notes.objects.get(pk=id)
