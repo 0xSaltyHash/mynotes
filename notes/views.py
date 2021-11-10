@@ -51,9 +51,9 @@ def edit(request, id):
     if request.method == "POST":
         form = newNote(request.POST, instance=note)
         if form.is_valid():
-            form.save()
+            updated_note = form.save()
             messages.success(request, 'Note edited successfuly')
-            return redirect(index)
+            return redirect(view_note, id=updated_note.id)
 
 def view_note(request, id):
     if request.method == "GET":
