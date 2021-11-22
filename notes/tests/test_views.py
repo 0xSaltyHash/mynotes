@@ -166,19 +166,16 @@ class test_views(TestCase):
         response = self.client.get(reverse('view_note', args=[2]))
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed('notes/note.html')
-    
-    def test_change_password_logged_in_POST(self):
+
+    def test_change_password_logged_in_GET(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        old_password_sha = self.test_user.password
-        response = self.client.post(reverse('change_password'), {
-            "old_password": "12345678",
-            "new_password1": "password2",
-            "new_password2": "password2",
-        })
-        print(old_password_sha)
-        self.assertNotEqual(old_password_sha, self.test_user.password)
-
-
-
-        
-        
+        response = self.client.get(reverse('change_password'))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('/notes/change_password.html')
+    
+    def test_change_password_not_logged_in_GET(self):
+        response = self.client.get(reverse('change_password'))
+        self.assertEquals(response.status_code, 302)
+        self.assertTemplateUsed('/notes/change_password.html')
+        self.assertRedirects(response, '/login?next=/change_password', status_code=302,
+        target_status_code=200)
