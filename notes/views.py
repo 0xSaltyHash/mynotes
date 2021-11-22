@@ -2,7 +2,9 @@ from django.shortcuts import redirect, render
 from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.urls.base import reverse
 from .models import User, Notes
 from .forms import newNote
 # Create your views here.
@@ -74,9 +76,19 @@ def view_note(request, id):
 def change_password(request):
     if request.method == "GET":
         return render(request, "notes/change_password.html", {
-            
+            "form": PasswordChangeForm(request.user)
         })
 
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('index')
+        else:
+            messages.error(request, "Couldn't change Password")
+            return redirect('change_password')
 
 def login_view(request):
     if request.method == "POST":
