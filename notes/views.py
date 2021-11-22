@@ -70,6 +70,14 @@ def view_note(request, id):
             "note": note
         })
 
+@login_required(login_url='/login')
+def change_password(request):
+    if request.method == "GET":
+        return render(request, "notes/change_password.html", {
+            
+        })
+
+
 def login_view(request):
     if request.method == "POST":
 
