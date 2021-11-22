@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve
-from notes.views import index, create, edit, view_note
+from notes.views import change_password, index, create, edit, view_note
 
 class TestUrls(SimpleTestCase):
     
@@ -19,3 +19,7 @@ class TestUrls(SimpleTestCase):
     def test_view_url_is_resolver(self):
         url = reverse('view_note', args=[1])
         self.assertEquals(resolve(url).func, view_note)
+    
+    def test_change_password_url_is_resolved(self):
+        url = reverse("change_password")
+        self.assertEquals(resolve(url).func, change_password)
