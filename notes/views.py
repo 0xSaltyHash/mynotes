@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.urls.base import reverse
-from .models import User, Notes
+from .models import Favorites, User, Notes
 from .forms import newNote
 # Create your views here.
 
@@ -138,3 +138,12 @@ def register(request):
         return redirect(index)
     else:
         return render(request, "notes/register.html")
+
+@login_required(login_url='/login')
+def favorite(request, id):
+    if request.method == "POST":
+        note = Notes.objects.get(pk=id)
+        Favorites.objects.create(user=request.user, favorite_note=note)
+        return render(request, "notes/note.html", {
+            "note": note
+        })
