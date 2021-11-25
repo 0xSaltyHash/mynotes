@@ -15,3 +15,7 @@ class Notes(models.Model):
     creation_date_time = models.DateTimeField(auto_now_add=True)
     is_public = models.BooleanField(default=False)
 
+class Favorites(models.Model):
+    favorite_note = models.ForeignKey(Notes, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    favorite_date_time = models.DateTimeField(auto_now_add=True)
