@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.urls.base import resolve
 from notes.models import Notes, User, Favorites
 from django.contrib.messages import get_messages
+from django.shortcuts import get_object_or_404
 
 class test_views(TestCase):
 
@@ -181,4 +182,9 @@ class test_views(TestCase):
         self.assertRedirects(response, '/login?next=/change_password', status_code=302,
         target_status_code=200)
 
-
+    def test_add_favorite_logged_in(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.post(reverse('favorite', args=[3]))
+        favorited_note = get_object_or_404(Favorites, pk=1)
+        self.assertEquals(favorited_note.favorite_note, self.test_note_public2)
+        self.assertEquals(response.status_code, 200)
