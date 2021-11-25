@@ -2,7 +2,7 @@ from django.http import response
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.urls.base import resolve
-from notes.models import Notes, User
+from notes.models import Notes, User, Favorites
 from django.contrib.messages import get_messages
 
 class test_views(TestCase):
@@ -10,9 +10,10 @@ class test_views(TestCase):
     def setUp(self):
         self.client = Client()
         self.test_user = User.objects.create(username="testuser", password="12345678", email="test@user.mail")
+        self.test_user2 = User.objects.create(username="testuser2", password="12345678", email="test2@mail.com")
         self.test_note = Notes.objects.create(creator=self.test_user, title="test note", body="test note")
         self.test_note_public = Notes.objects.create(creator=self.test_user, title="public note", body="public note body", is_public=True)
-    
+        self.test_note_public2 = Notes.objects.create(creator=self.test_user2, title="public note", body="public note body", is_public=True)
     def test_notes_list_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
         response = self.client.get(reverse('index'))
@@ -42,11 +43,11 @@ class test_views(TestCase):
             'body': 'test body'
         })
 
-        self.assertRedirects(response, '/view/3', status_code=302,
+        self.assertRedirects(response, '/view/4', status_code=302,
          target_status_code=200, fetch_redirect_response=True)
 
-        self.assertEquals(Notes.objects.get(pk=3).title, 'test title')
-        self.assertEquals(Notes.objects.get(pk=3).body, 'test body')
+        self.assertEquals(Notes.objects.get(pk=4).title, 'test title')
+        self.assertEquals(Notes.objects.get(pk=4).body, 'test body')
     
     def test_create_notes_POST_not_logged_in(self):
 
@@ -71,13 +72,13 @@ class test_views(TestCase):
     
     def test_edit_not_found_note_GET_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        response = self.client.get(reverse('edit', args=[3]))
+        response = self.client.get(reverse('edit', args=[4]))
         self.assertRedirects(response, '/', status_code=302,
         target_status_code=200)
 
     def test_edit_not_found_note_POST_logged_in(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        response = self.client.post(reverse('edit', args=[3]), {
+        response = self.client.post(reverse('edit', args=[4]), {
             'title': "New test Title",
             "body": 'New Test Body'
         })
@@ -154,7 +155,7 @@ class test_views(TestCase):
     
     def test_view_note_not_found_GET(self):
         self.client.force_login(User.objects.get_or_create(username='testuser')[0])
-        response = self.client.get(reverse('view_note', args=[3]))
+        response = self.client.get(reverse('view_note', args=[4]))
         
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
@@ -179,3 +180,5 @@ class test_views(TestCase):
         self.assertTemplateUsed('/notes/change_password.html')
         self.assertRedirects(response, '/login?next=/change_password', status_code=302,
         target_status_code=200)
+
+
