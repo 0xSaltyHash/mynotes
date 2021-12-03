@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.urls.base import reverse
@@ -9,6 +10,7 @@ from .models import Favorites, User, Notes
 from .forms import newNote
 # Create your views here.
 
+@require_http_methods(['GET'])
 @login_required(login_url='/login')
 def index(request):
     userNotes = Notes.objects.filter(creator=request.user)
@@ -17,6 +19,7 @@ def index(request):
 
     })
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url='/login')
 def create(request):
     if request.method == "GET":
@@ -31,6 +34,7 @@ def create(request):
             new_note.save()
         return redirect(view_note, id=new_note.id)
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url='/login')
 def edit(request, id):
     try:
@@ -57,6 +61,7 @@ def edit(request, id):
             messages.success(request, 'Note edited successfuly')
             return redirect(view_note, id=updated_note.id)
 
+@require_http_methods(['GET'])
 def view_note(request, id):
     if request.method == "GET":
         try:
@@ -72,6 +77,7 @@ def view_note(request, id):
             "note": note
         })
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url='/login')
 def change_password(request):
     if request.method == "GET":
@@ -90,6 +96,7 @@ def change_password(request):
             messages.error(request, "Couldn't change Password")
             return redirect('change_password')
 
+@require_http_methods(['GET', 'POST'])
 def login_view(request):
     if request.method == "POST":
 
@@ -113,6 +120,7 @@ def logout_view(request):
     logout(request)
     return redirect(index)
 
+@require_http_methods(['GET', 'POST'])
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -139,6 +147,7 @@ def register(request):
     else:
         return render(request, "notes/register.html")
 
+@require_http_methods(['POST'])
 @login_required(login_url='/login')
 def favorite(request, id):
     if request.method == "POST":
@@ -148,6 +157,7 @@ def favorite(request, id):
             "note": note
         })
 
+@require_http_methods(['GET'])
 @login_required(login_url='/login')
 def list_favorites(request):
     if request.method == "GET":
