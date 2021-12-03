@@ -32,7 +32,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://mynotesapp-1337.herokuapp.com/']
+ALLOWED_HOSTS = ['mynotesapp-1337.herokuapp.com/']
 
 
 # Application definition
