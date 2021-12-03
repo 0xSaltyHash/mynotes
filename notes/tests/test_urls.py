@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve
-from notes.views import change_password, favorite, index, create, edit, view_note
+from notes.views import change_password, favorite, index, create, edit, view_note, list_favorites
 
 class TestUrls(SimpleTestCase):
     
@@ -27,3 +27,8 @@ class TestUrls(SimpleTestCase):
     def test_favorite_url_is_resolved(self):
         url = reverse("favorite", args=[1])
         self.assertEquals(resolve(url).func, favorite)
+    
+    def test_list_favorites_url_is_resolved(self):
+        url = reverse("favorites")
+        self.assertEquals(resolve(url).func, list_favorites)
+
