@@ -147,3 +147,11 @@ def favorite(request, id):
         return render(request, "notes/note.html", {
             "note": note
         })
+
+@login_required(login_url='/login')
+def list_favorites(request):
+    if request.method == "GET":
+        favorites = Favorites.objects.filter(user=request.user)
+        return render(request, "notes/favorites.html", {
+            "notes": favorites
+        })
