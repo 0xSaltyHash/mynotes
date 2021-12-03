@@ -188,3 +188,14 @@ class test_views(TestCase):
         favorited_note = get_object_or_404(Favorites, pk=1)
         self.assertEquals(favorited_note.favorite_note, self.test_note_public2)
         self.assertEquals(response.status_code, 200)
+
+    def test_list_favorites_logged_in(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        response = self.client.get(reverse('favorites'))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('notes/favorites.html')
+    
+    def test_list_favorites_not_logged_in(self):
+        response = self.client.get(reverse('favorites'))
+        self.assertRedirects(response, '/login?next=/favorites', status_code= 302,
+        target_status_code=200)
