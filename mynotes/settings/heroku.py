@@ -8,7 +8,7 @@ env = environ.Env(
 
 # False if not in os.environ
 DEBUG = env('DEBUG')
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 SECRET_KEY = env('SECRET_KEY')
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
