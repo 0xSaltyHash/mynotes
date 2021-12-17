@@ -10,10 +10,10 @@ env = environ.Env(
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = ['mynotesapp-1337.herokuapp.com', "*"]
 SECRET_KEY = env('SECRET_KEY')
-"""DATABASES = {
+DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': env.db(),
-}"""
+}
 
 
 
